@@ -203,7 +203,24 @@ def _initialize_recipe(
         crystals: typing.Dict[str, Crystal],
         fc_name: str = "PDF"
 ) -> None:
-    """Initialize the FitRecipe object with variables."""
+    """Initialize the FitRecipe object with variables.
+
+    The parameters are the scale of the PDF, the delta2 parameter in the correction of correlated motions,
+    the atomic displacement parameters (ADPs) of the symmetric unique atoms, the x, y, z positions of the
+    symmetric unique atoms under the constraint of the symmetry and the parameters in the functions registered
+    in the FitContribution.
+
+    Parameters
+    ----------
+    recipe
+    functions
+    crystals
+    fc_name
+
+    Returns
+    -------
+
+    """
     fc: FitContribution = getattr(recipe, fc_name)
     for name, (_, argnames) in functions.items():
         _add_params_in_fc(recipe, fc, argnames[1:], tags=[name])
@@ -411,3 +428,26 @@ def export_diff_from_fgr(fgr_file: str, dst_file: str) -> None:
     data = np.column_stack([x, diff])
     np.savetxt(dst_file, data, header="x y")
     return
+
+
+def ligand_pdf(r: np.ndarray, a: float, s: float, k: float, r0: float) -> np.ndarray:
+    """The Gaussian damping cosine function. Simulate the PDF of the ligand.
+
+    Parameters
+    ----------
+    r :
+        The array of r.
+    a :
+        The amplitude of the function.
+    s :
+        The decay rate.
+    k :
+        The wave vector.
+    r0 :
+        The zero phase r value.
+
+    Returns
+    -------
+    A data array of function values.
+    """
+    return a * np.exp(-np.square(s * r)) * np.cos(k * (r - r0))
