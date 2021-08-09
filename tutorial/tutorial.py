@@ -15,13 +15,33 @@ import diffpy.srfit.pdf.characteristicfunctions
 F = diffpy.srfit.pdf.characteristicfunctions
 
 
-def create_recipe(
+def _create_recipe(
         equation: str,
         crystals: typing.Dict[str, Crystal],
         functions: typing.Dict[str, typing.Tuple[typing.Callable, typing.List[str]]],
         profile: Profile,
         fc_name: str = "PDF"
 ) -> FitRecipe:
+    """Create the FitRecipe object.
+
+    Parameters
+    ----------
+    equation :
+        The equation of G(r).
+    crystals :
+        A mapping from the name of variable in the equation to the crystal structure for PDF calculation.
+    functions :
+        A mapping from the name of variable in the equation to the python function for PDF calculation.
+        The first argument of the function is the array of r, the other arguments are the parameters.
+    profile :
+        The data profile that contains both the metadata and the data.
+    fc_name :
+        The name of the FitContribution in the FitRecipe. Default "PDF".
+
+    Returns
+    -------
+    A FitRecipe object.
+    """
     fr = FitRecipe()
     fc = FitContribution(fc_name)
     for name, crystal in crystals.items():
@@ -37,10 +57,31 @@ def create_recipe(
 
 
 def _get_tags(phase: str, param: str) -> typing.List[str]:
+    """Get the tag names.
+
+    Parameters
+    ----------
+    phase
+    param
+
+    Returns
+    -------
+
+    """
     return [param, phase, "{}_{}".format(phase, param)]
 
 
 def _get_name(*args: str) -> str:
+    """Get the name of the variable.
+
+    Parameters
+    ----------
+    args
+
+    Returns
+    -------
+
+    """
     return "_".join(args)
 
 
@@ -50,6 +91,15 @@ def _rename_par(name: str, atoms: list) -> str:
 
     Used for the space group constrained parameters. For example, "x_0" where atom index 0 is Ni will become
     "Ni0_x" after renamed. If the name can not renamed, return the original name.
+
+    Parameters
+    ----------
+    name
+    atoms
+
+    Returns
+    -------
+
     """
     parts = name.split("_")
     np = len(parts)
@@ -60,7 +110,18 @@ def _rename_par(name: str, atoms: list) -> str:
     return "_".join(parts)
 
 
-def add_params_in_pg(recipe: FitRecipe, pg: PDFGenerator) -> None:
+def _add_params_in_pg(recipe: FitRecipe, pg: PDFGenerator) -> None:
+    """Add parameters in the PDFGenerator.
+
+    Parameters
+    ----------
+    recipe
+    pg
+
+    Returns
+    -------
+
+    """
     name: str = pg.name
     recipe.addVar(
         pg.scale,
@@ -106,12 +167,25 @@ def add_params_in_pg(recipe: FitRecipe, pg: PDFGenerator) -> None:
     return
 
 
-def add_params_in_fc(
+def _add_params_in_fc(
         recipe: FitRecipe,
         fc: FitContribution,
         names: typing.List[str],
         tags: typing.List[str]
 ) -> None:
+    """Add parameters in the FitContribution.
+
+    Parameters
+    ----------
+    recipe
+    fc
+    names
+    tags
+
+    Returns
+    -------
+
+    """
     for name in names:
         par = getattr(fc, name)
         recipe.addVar(
@@ -123,18 +197,19 @@ def add_params_in_fc(
     return
 
 
-def initialize_recipe(
+def _initialize_recipe(
         recipe: FitRecipe,
         functions: typing.Dict[str, typing.Tuple[typing.Callable, typing.List[str]]],
         crystals: typing.Dict[str, Crystal],
         fc_name: str = "PDF"
 ) -> None:
+    """Initialize the FitRecipe object with variables."""
     fc: FitContribution = getattr(recipe, fc_name)
     for name, (_, argnames) in functions.items():
-        add_params_in_fc(recipe, fc, argnames[1:], tags=[name])
+        _add_params_in_fc(recipe, fc, argnames[1:], tags=[name])
     for name in crystals.keys():
         pg: PDFGenerator = getattr(fc, name)
-        add_params_in_pg(recipe, pg)
+        _add_params_in_pg(recipe, pg)
     recipe.clearFitHooks()
     return
 
@@ -144,8 +219,32 @@ def create_recipe_from_files(
         cif_files: typing.Dict[str, str],
         functions: typing.Dict[str, typing.Tuple[typing.Callable, typing.List[str]]],
         data_file: typing.Dict[str, str],
-        meta_data: typing.Dict[str, typing.Union[str, int, float]] = None
+        meta_data: typing.Dict[str, typing.Union[str, int, float]] = None,
+        fc_name: str = "PDF"
 ) -> FitRecipe:
+    """Create the FitRecipe object.
+
+    Parameters
+    ----------
+    equation :
+        The equation of G(r).
+    cif_files :
+        A mapping from the name of variable in the equation to cif files of the crystal structure for PDF
+        calculation.
+    functions :
+        A mapping from the name of variable in the equation to the python function for PDF calculation.
+        The first argument of the function is the array of r, the other arguments are the parameters.
+    data_file :
+        The data file that be loaded into the data profile that contains both the metadata and the data.
+    meta_data :
+        Additional metadata to add into the data profile.
+    fc_name :
+        The name of the FitContribution in the FitRecipe. Default "PDF".
+
+    Returns
+    -------
+    A FitRecipe object.
+    """
     if meta_data is None:
         meta_data = {}
     crystals = {n: loadCrystal(f) for n, f in cif_files.items()}
@@ -154,8 +253,8 @@ def create_recipe_from_files(
     profile = Profile()
     profile.loadParsedData(pp)
     profile.meta.update(meta_data)
-    recipe = create_recipe(equation, crystals, functions, profile)
-    initialize_recipe(recipe, functions, crystals)
+    recipe = _create_recipe(equation, crystals, functions, profile, fc_name=fc_name)
+    _initialize_recipe(recipe, functions, crystals, fc_name=fc_name)
     return recipe
 
 
@@ -169,6 +268,32 @@ def optimize_params(
         fc_name: str = "PDF",
         **kwargs
 ) -> None:
+    """Optimize the parameters in the FitRecipe object using least square regression.
+
+    Parameters
+    ----------
+    recipe :
+        The FitRecipe object.
+    steps :
+        A list of lists of parameter names in the recipe. They will be free and refined one batch after another.
+        Usually, the scale, lattice should be refined before the APD and XYZ.
+    rmin :
+        The minimum r in the range for refinement. If None, use the minimum r in the data.
+    rmax :
+        The maximum r in the range for refinement. If None, use the maximum r in the data.
+    rstep :
+        The step of r in the range for refinement. If None, use the step of r in the data.
+    print_step :
+        If True, print out the refinement step. Default True.
+    fc_name :
+        The name of the FitContribution in the FitRecipe. Default "PDF".
+    kwargs :
+        The kwargs for the `scipy.optimize.least_square`.
+
+    Returns
+    -------
+    None.
+    """
     n = len(steps)
     fc: FitContribution = getattr(recipe, fc_name)
     p: Profile = fc.profile
@@ -189,6 +314,19 @@ def optimize_params(
 
 
 def visualize_fits(recipe: FitRecipe, fc_name: str = "PDF") -> None:
+    """Visualize the fits in the FitRecipe object.
+
+    Parameters
+    ----------
+    recipe :
+        The FitRecipe object.
+    fc_name :
+        The name of the FitContribution in the FitRecipe. Default "PDF".
+
+    Returns
+    -------
+    None.
+    """
     # get data
     fc = getattr(recipe, fc_name)
     r = fc.profile.x
@@ -216,6 +354,24 @@ def save_results(
         pg_names: typing.List[str] = None,
         fc_name: str = "PDF"
 ) -> None:
+    """Save the parameters, fits and structures in the FitRecipe object.
+
+    Parameters
+    ----------
+    recipe :
+        The FitRecipe object.
+    directory :
+        The directory to output the files.
+    file_stem :
+        The stem of the filename.
+    pg_names :
+        The name of the PDFGenerators (it will also be the name of the structures) to save. If None, not to save.
+    fc_name
+        The name of the FitContribution in the FitRecipe. Default "PDF".
+    Returns
+    -------
+    None.
+    """
     d_path = Path(directory)
     d_path.mkdir(parents=True, exist_ok=True)
     f_path = d_path.joinpath(file_stem)
@@ -237,8 +393,21 @@ def save_results(
 
 
 def export_diff_from_fgr(fgr_file: str, dst_file: str) -> None:
+    """Export the difference curve in another file from a file containing x, ycalc, y, dy.
+
+    Parameters
+    ----------
+    fgr_file :
+        The input file containing four columns x, ycalc, y, dy.
+    dst_file :
+        The output file containing two columns x, y.
+
+    Returns
+    -------
+    None.s
+    """
     x, ycalc, y, _ = loadData(fgr_file).T
     diff = y - ycalc
     data = np.column_stack([x, diff])
-    np.savetxt(dst_file, data)
+    np.savetxt(dst_file, data, header="x y")
     return
