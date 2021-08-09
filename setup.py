@@ -36,7 +36,7 @@ with open(path.join(here, 'requirements.txt')) as requirements_file:
 setup(
     name='20210818_iucr_diffpy_talk',
     version='0.1.0',
-    description="The talks "Advanced modeling of nanostructure from Atomic Pair Distribution Functions (PDFs) using Diffpy-CMI on Windows 10".",
+    description="Advanced modeling of nanostructure from Atomic Pair Distribution Functions (PDFs) using Diffpy-CMI on Windows 10.",
     long_description=readme,
     author="Songsheng Tao",
     author_email='st3107@columbia.edu',
@@ -54,6 +54,7 @@ setup(
             # When adding files here, remember to update MANIFEST.in as well,
             # or else they will not be included in the distribution on PyPI!
             # 'path/to/data_file',
+            "data/*"
         ]
     },
     install_requires=requirements,
