@@ -335,7 +335,7 @@ def visualize_fits(recipe: FitRecipe, fc_name: str = "PDF") -> None:
     gdiff = g - gcalc
     diffzero = -0.8 * np.max(g) * np.ones_like(g)
     # plot figure
-    fig, ax = plt.subplots()
+    _, ax = plt.subplots()
     ax.plot(r, g, 'bo', label="G(r) Data")
     ax.plot(r, gcalc, 'r-', label="G(r) Fit")
     ax.plot(r, gdiff + diffzero, 'g-', label="G(r) Diff")
@@ -343,7 +343,7 @@ def visualize_fits(recipe: FitRecipe, fc_name: str = "PDF") -> None:
     ax.set_xlabel(r"$r (\AA)$")
     ax.set_ylabel(r"$G (\AA^{-2})$")
     ax.legend(loc=1)
-    fig.show()
+    plt.show()
     return
 
 
