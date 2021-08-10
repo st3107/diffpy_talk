@@ -1,0 +1,10 @@
+name: test
+channels:
+  - diffpy
+  - defaults
+dependencies:
+  - python=3.8
+  - diffpy-cmi
+  - numpy
+  - scipy
+  - pandas
