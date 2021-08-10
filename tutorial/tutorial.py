@@ -1,16 +1,16 @@
 import typing
-import matplotlib.pyplot as plt
-import numpy as np
 from pathlib import Path
 
-from scipy.optimize import least_squares
-from diffpy.utils.parsers.loaddata import loadData
+import diffpy.srfit.pdf.characteristicfunctions
+import matplotlib.pyplot as plt
+import numpy as np
 from diffpy.srfit.fitbase import FitRecipe, FitContribution, Profile, FitResults
-from diffpy.srfit.pdf import PDFGenerator, PDFParser
 from diffpy.srfit.fitbase.parameterset import ParameterSet
+from diffpy.srfit.pdf import PDFGenerator, PDFParser
+from diffpy.utils.parsers.loaddata import loadData
 from pyobjcryst import loadCrystal
 from pyobjcryst.crystal import Crystal
-import diffpy.srfit.pdf.characteristicfunctions
+from scipy.optimize import least_squares
 
 F = diffpy.srfit.pdf.characteristicfunctions
 
