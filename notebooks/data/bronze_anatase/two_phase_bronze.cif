@@ -1,0 +1,41 @@
+data_Ti8_O16
+
+_computing_structure_solution     'FOX http://objcryst.sourceforge.net'
+
+_symmetry_space_group_name_H-M    'C 1 2/m 1'
+_symmetry_space_group_name_Hall   '-C 2y'
+
+_cell_length_a    12.21039
+_cell_length_b     3.75080
+_cell_length_c     6.47957
+_cell_angle_alpha  90.000
+_cell_angle_beta  107.120
+_cell_angle_gamma  90.000
+_cell_volume       283.61
+loop_
+    _atom_site_label
+    _atom_site_type_symbol
+    _atom_site_fract_x
+    _atom_site_fract_y
+    _atom_site_fract_z
+    _atom_site_U_iso_or_equiv
+    _atom_site_occupancy
+    _atom_site_adp_type
+    Ti0        Ti        0.101458  0.000000  0.706814  0.005835 1.0000 Uiso
+    Ti1        Ti        0.196697  0.000000  0.287791  0.008209 1.0000 Uiso
+    O2         O         0.062729  0.000000  0.365973  0.010252 1.0000 Uiso
+    O3         O         0.125982  0.000000  0.013500  0.018563 1.0000 Uiso
+    O4         O         0.129376  0.500000  0.711575  0.012719 1.0000 Uiso
+    O5         O         0.246777  0.500000  0.360232  0.018618 1.0000 Uiso
+
+#  Dynamical occupancy corrections found by ObjCryst++:
+#  values below 1. (100%) indicate a correction,
+#  which means either that the atom is on a special position,
+#  or that it is overlapping with another identical atom.
+#   Ti0              : 0.5000
+#   Ti1              : 0.5000
+#   O2               : 0.5000
+#   O3               : 0.5000
+#   O4               : 0.5000
+#   O5               : 0.5000
+#
