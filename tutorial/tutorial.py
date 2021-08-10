@@ -330,13 +330,15 @@ def optimize_params(
     return
 
 
-def visualize_fits(recipe: FitRecipe, fc_name: str = "PDF") -> None:
+def visualize_fits(recipe: FitRecipe, xlim: typing.Tuple = None, fc_name: str = "PDF") -> None:
     """Visualize the fits in the FitRecipe object.
 
     Parameters
     ----------
     recipe :
         The FitRecipe object.
+    xlim :
+        The boundary of the x to show in the plot.
     fc_name :
         The name of the FitContribution in the FitRecipe. Default "PDF".
 
@@ -349,6 +351,11 @@ def visualize_fits(recipe: FitRecipe, fc_name: str = "PDF") -> None:
     r = fc.profile.x
     g = fc.profile.y
     gcalc = fc.profile.ycalc
+    if xlim is not None:
+        sel = np.logical_and(r >= xlim[0], r <= xlim[1])
+        r = r[sel]
+        g = g[sel]
+        gcalc = gcalc[sel]
     gdiff = g - gcalc
     diffzero = -0.8 * np.max(g) * np.ones_like(g)
     # plot figure
@@ -361,6 +368,85 @@ def visualize_fits(recipe: FitRecipe, fc_name: str = "PDF") -> None:
     ax.set_ylabel(r"$G (\AA^{-2})$")
     ax.legend(loc=1)
     plt.show()
+    return
+
+
+def visualize_fits_from_file(fgr_file: str, xlim: typing.Tuple = None, ax: plt.Axes = None) -> None:
+    """Visualize the fits in the FitRecipe object.
+
+    Parameters
+    ----------
+    fgr_file :
+        The file containing the fits.
+    xlim :
+        The boundary of the x to show in the plot.
+    ax :
+        The Axes to show the plot.
+
+    Returns
+    -------
+    None.
+    """
+    r, gcalc, g, _ = loadData(fgr_file).T
+    if xlim is not None:
+        sel = np.logical_and(r >= xlim[0], r <= xlim[1])
+        r = r[sel]
+        g = g[sel]
+        gcalc = gcalc[sel]
+    gdiff = g - gcalc
+    diffzero = -0.8 * np.max(g) * np.ones_like(g)
+    # plot figure
+    if ax is None:
+        _, ax = plt.subplots()
+    ax.plot(r, g, 'bo', label="G(r) Data")
+    ax.plot(r, gcalc, 'r-', label="G(r) Fit")
+    ax.plot(r, gdiff + diffzero, 'g-', label="G(r) Diff")
+    ax.plot(r, diffzero, 'k-')
+    ax.set_xlabel(r"$r (\AA)$")
+    ax.set_ylabel(r"$G (\AA^{-2})$")
+    ax.legend(loc=1)
+    return
+
+
+def visualize_grs_from_files(
+        fgr_files: typing.List[str],
+        xlim: typing.Tuple = None,
+        ax: plt.Axes = None,
+        labels: typing.List[str] = None
+) -> None:
+    """Visualize the G(r) in multiple files.
+
+    Parameters
+    ----------
+    fgr_files :
+        A list of files containing the r, g data.
+    xlim :
+        The boundary of the x to show in the plot.
+    ax :
+        The Axes to show the plot.
+    labels :
+        The lables of the curves.
+
+    Returns
+    -------
+    None.
+    """
+    if labels is None:
+        labels = []
+    if ax is None:
+        _, ax = plt.subplots()
+    for fgr_file in fgr_files:
+        r, g = loadData(fgr_file).T[:2]
+        if xlim is not None:
+            sel = np.logical_and(r >= xlim[0], r <= xlim[1])
+            r = r[sel]
+            g = g[sel]
+        # plot figure
+        ax.plot(r, g, '-')
+    ax.set_xlabel(r"$r (\AA)$")
+    ax.set_ylabel(r"$G (\AA^{-2})$")
+    if labels is not None:
+        ax.legend(labels, loc=1)
     return
 
 
