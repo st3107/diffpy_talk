@@ -14,7 +14,13 @@ The talks "Advanced modeling of nanostructure from Atomic Pair Distribution Func
 * Free software: 3-clause BSD license
 * Documentation: (COMING SOON!) https://st3107.github.io/20210818_iucr_diffpy_talk.
 
-Features
---------
+Resources
+---------
 
-* TODO
+Video of the talk:
+
+https://drive.google.com/file/d/1JVkmOEYr7TeF9yW9NWRfo6Ss8lpNm3OI/view?usp=sharing
+
+Google colab:
+
+https://colab.research.google.com/drive/1sBZ6HnL1nsReceZVGru1L4wEWDI9_aGa?usp=sharing
