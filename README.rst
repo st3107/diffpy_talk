@@ -8,7 +8,7 @@ iucr_diffpy_talk
 The talk "Advanced modeling of nanostructure from Atomic Pair Distribution Functions (PDFs) using Diffpy-CMI".
 
 * Free software: 3-clause BSD license
-* Documentation: https://st3107.github.io/20210818_iucr_diffpy_talk.
+* Documentation: https://st3107.github.io/diffpy_talk.
 
 Resources
 ---------
