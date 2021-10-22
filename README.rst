@@ -2,12 +2,8 @@
 iucr_diffpy_talk
 ================
 
-.. image:: https://img.shields.io/travis/st3107/20210818_iucr_diffpy_talk.svg
-        :target: https://travis-ci.org/st3107/20210818_iucr_diffpy_talk
-
-.. image:: https://img.shields.io/pypi/v/20210818_iucr_diffpy_talk.svg
-        :target: https://pypi.python.org/pypi/20210818_iucr_diffpy_talk
-
+.. image:: https://github.com/st3107/diffpy_talk/actions/workflows/test.yml/badge.svg
+        :target: https://github.com/st3107/diffpy_talk/actions/workflows/test.yml
 
 The talk "Advanced modeling of nanostructure from Atomic Pair Distribution Functions (PDFs) using Diffpy-CMI".
 
