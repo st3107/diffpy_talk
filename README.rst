@@ -19,7 +19,7 @@ Resources
 
 Video of the talk:
 
-https://drive.google.com/file/d/1JVkmOEYr7TeF9yW9NWRfo6Ss8lpNm3OI/view?usp=sharing
+https://drive.google.com/drive/folders/1wz3KLYunUy4d4F3_yAiGkwPp-fg2ZF_9?usp=sharing
 
 Google colab:
 
